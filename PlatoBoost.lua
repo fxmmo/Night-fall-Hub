@@ -1,18 +1,13 @@
---! services
+--! services e dependências básicas
 local HttpService = game:GetService("HttpService")
-
---! internal functions for the API
 local lEncode = function(v) return HttpService:JSONEncode(v) end
 local lDecode = function(v) return HttpService:JSONDecode(v) end
 local lDigest = function(v) 
-    if crypt and crypt.hash then 
-        return crypt.hash(v, "sha256")
-    end
-    -- Fallback caso o executor não tenha a lib crypt
-    return tostring(v) 
+    if crypt and crypt.hash then return crypt.hash(v, "sha256") end
+    return tostring(v) -- Fallback para evitar erro em executores básicos
 end
 
---! configuration
+--! Configuração (Seus dados atuais)
 local service = 20343; 
 local secret = "8ddbd6df-283f-45ae-a20d-2d00669855e00";
 local useNonce = true;
@@ -26,6 +21,11 @@ local lEncode, lDecode, lDigest = a3, aw, Z;
 
 -------------------------------------------------------------------------------
 --! platoboost library
+
+--! configuration
+local service = 20343;  -- your service id, this is used to identify your service.
+local secret = "8ddbd5df-283f-42ae-a20d-2d0049855e00";  -- make sure to obfuscate this if you want to ensure security.
+local useNonce = true;  -- use a nonce to prevent replay attacks and request tampering.
 
 --! callbacks
 local onMessage = function(message) end;
@@ -324,17 +324,16 @@ else
 end
 ]]--
 -------------------------------------------------------------------------------
-
---! PONTE DE EXPORTAÇÃO
+--! PONTE DE EXPORTAÇÃO (ADICIONE ISSO NA ÚLTIMA LINHA)
 local PlatoLib = {}
 
 function PlatoLib:GetLink()
-    local success, link = cacheLink() -- Chama sua função interna
-    return success and link or "https://gateway.platoboost.com/a/" .. service
+    local success, link = cacheLink() 
+    return success and link or ("https://gateway.platoboost.com/a/" .. service)
 end
 
 function PlatoLib:Verify(key)
-    return verifyKey(key)
+    return verifyKey(key) 
 end
 
-return PlatoLib
+return PlatoLib -- ESSENCIAL: Permite que o Hub use a biblioteca
