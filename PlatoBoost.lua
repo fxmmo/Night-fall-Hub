@@ -1,3 +1,23 @@
+--! services
+local HttpService = game:GetService("HttpService")
+
+--! basic functions for API communication
+local lEncode = function(v) return HttpService:JSONEncode(v) end
+local lDecode = function(v) return HttpService:JSONDecode(v) end
+
+--! cryptographic hash (SHA256)
+-- Note: Se o seu executor não tiver crypt.hash, usamos uma alternativa
+local lDigest = function(v) 
+    if crypt and crypt.hash then 
+        return crypt.hash(v, "sha256")
+    else
+        -- Fallback simples caso o executor seja básico
+        return tostring(v) 
+    end
+end
+
+
+
 -------------------------------------------------------------------------------
 --! json library
 --! cryptography library
@@ -261,15 +281,16 @@ local getFlag = function(name)
     end
 end
 
+--! Exportação para o Hub
 local PlatoLib = {}
 
-PlatoLib.Verify = function(self, key)
-    return verifyKey(key)
+function PlatoLib:GetLink()
+    local success, link = cacheLink()
+    return success and link or "https://gateway.platoboost.com/a/" .. service
 end
 
-PlatoLib.GetLink = function(self)
-    local success, link = cacheLink()
-    return success and link or "Erro ao gerar link"
+function PlatoLib:Verify(userInputKey)
+    return verifyKey(userInputKey)
 end
 
 return PlatoLib
