@@ -1,22 +1,21 @@
 --! services
 local HttpService = game:GetService("HttpService")
 
---! basic functions for API communication
+--! internal functions for the API
 local lEncode = function(v) return HttpService:JSONEncode(v) end
 local lDecode = function(v) return HttpService:JSONDecode(v) end
-
---! cryptographic hash (SHA256)
--- Note: Se o seu executor não tiver crypt.hash, usamos uma alternativa
 local lDigest = function(v) 
     if crypt and crypt.hash then 
         return crypt.hash(v, "sha256")
-    else
-        -- Fallback simples caso o executor seja básico
-        return tostring(v) 
     end
+    -- Fallback caso o executor não tenha a lib crypt
+    return tostring(v) 
 end
 
-
+--! configuration
+local service = 20343; 
+local secret = "8ddbd6df-283f-45ae-a20d-2d00669855e00";
+local useNonce = true;
 
 -------------------------------------------------------------------------------
 --! json library
@@ -27,11 +26,6 @@ local lEncode, lDecode, lDigest = a3, aw, Z;
 
 -------------------------------------------------------------------------------
 --! platoboost library
-
---! configuration
-local service = 20343;  -- your service id, this is used to identify your service.
-local secret = "8ddbd5df-283f-42ae-a20d-2d0049855e00";  -- make sure to obfuscate this if you want to ensure security.
-local useNonce = true;  -- use a nonce to prevent replay attacks and request tampering.
 
 --! callbacks
 local onMessage = function(message) end;
@@ -280,21 +274,6 @@ local getFlag = function(name)
         return nil;
     end
 end
-
---! Exportação para o Hub
-local PlatoLib = {}
-
-function PlatoLib:GetLink()
-    local success, link = cacheLink()
-    return success and link or "https://gateway.platoboost.com/a/" .. service
-end
-
-function PlatoLib:Verify(userInputKey)
-    return verifyKey(userInputKey)
-end
-
-return PlatoLib
-
 -------------------------------------------------------------------------------
 
 -------------------------------------------------------------------------------
@@ -345,3 +324,17 @@ else
 end
 ]]--
 -------------------------------------------------------------------------------
+
+--! PONTE DE EXPORTAÇÃO
+local PlatoLib = {}
+
+function PlatoLib:GetLink()
+    local success, link = cacheLink() -- Chama sua função interna
+    return success and link or "https://gateway.platoboost.com/a/" .. service
+end
+
+function PlatoLib:Verify(key)
+    return verifyKey(key)
+end
+
+return PlatoLib
