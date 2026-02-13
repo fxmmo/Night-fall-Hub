@@ -25,7 +25,7 @@ local fSetClipboard, fRequest, fStringChar, fToString, fStringSub, fOsTime, fMat
 local cachedLink, cachedTime = "", 0;
 
 --! pick host
-local host = "https://api.platoboost.net";
+local host = "https://api.platoboost.com";
 local hostResponse = fRequest({
     Url = host .. "/public/connectivity",
     Method = "GET"
@@ -260,53 +260,9 @@ local getFlag = function(name)
         return nil;
     end
 end
--------------------------------------------------------------------------------
 
--------------------------------------------------------------------------------
---! platoboost usage documentation
--- copyLink() -> string
--- verifyKey(key: string) -> boolean
--- getFlag(name: string) -> boolean, string | boolean | number
-
--- use copyLink() to copy a link to the clipboard, in which the user will paste it into their browser and complete the keysystem.
--- use verifyKey(key) to verify a key, this will return a boolean value, true means the key was valid, false means it is invalid.
--- use getFlag(name) to get a flag from the server, this will return nil if an error occurs, if no error occurs, the value configured in the platoboost dashboard will be returned.
-
--- IMPORTANT: onMessage is a callback, it will be called upon status update, use it to provide information to user.
--- EXAMPLE: 
---[[
-onMessage = function(message)
-    game:GetService("StarterGui"):SetCore("SendNotification", {
-        Title = "Platoboost status",
-        Text = message
-    })
-end
-]]--
-
--- NOTE: PLACE THIS ENTIRE SCRIPT AT THE TOP OF YOUR SCRIPT, ADD THE LOGIC, THEN OBFUSCATE YOUR SCRIPT.
-
---! example usage
---[[
-copyButton.MouseButton1Click:Connect(function()
-    copyLink();
-end)
-
-verifyButton.MouseButton1Click:Connect(function()
-    local key = keyBox.Text;
-    local success = verifyKey(key);
-
-    if success then
-        print("key is valid.");
-    else
-        print("key is invalid.");
-    end
-end)
-
-local flag = getFlag("example_flag");
-if flag ~= nil then
-    print("flag value: " .. flag);
-else
-    print("failed to get flag.");
-end
-]]--
+return {
+    redeemKey = redeemKey,
+    copyLink = copyLink
+}
 -------------------------------------------------------------------------------
