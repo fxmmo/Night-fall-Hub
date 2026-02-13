@@ -1,17 +1,3 @@
---! services e dependências básicas
-local HttpService = game:GetService("HttpService")
-local lEncode = function(v) return HttpService:JSONEncode(v) end
-local lDecode = function(v) return HttpService:JSONDecode(v) end
-local lDigest = function(v) 
-    if crypt and crypt.hash then return crypt.hash(v, "sha256") end
-    return tostring(v) -- Fallback para evitar erro em executores básicos
-end
-
---! Configuração (Seus dados atuais)
-local service = 20343; 
-local secret = "8ddbd6df-283f-45ae-a20d-2d00669855e00";
-local useNonce = true;
-
 -------------------------------------------------------------------------------
 --! json library
 --! cryptography library
@@ -39,7 +25,7 @@ local fSetClipboard, fRequest, fStringChar, fToString, fStringSub, fOsTime, fMat
 local cachedLink, cachedTime = "", 0;
 
 --! pick host
-local host = "https://api.platoboost.com";
+local host = "https://api.platoboost.net";
 local hostResponse = fRequest({
     Url = host .. "/public/connectivity",
     Method = "GET"
@@ -324,16 +310,3 @@ else
 end
 ]]--
 -------------------------------------------------------------------------------
---! PONTE DE EXPORTAÇÃO (ADICIONE ISSO NA ÚLTIMA LINHA)
-local PlatoLib = {}
-
-function PlatoLib:GetLink()
-    local success, link = cacheLink() 
-    return success and link or ("https://gateway.platoboost.com/a/" .. service)
-end
-
-function PlatoLib:Verify(key)
-    return verifyKey(key) 
-end
-
-return PlatoLib -- ESSENCIAL: Permite que o Hub use a biblioteca
