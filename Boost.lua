@@ -25,7 +25,7 @@ local fSetClipboard, fRequest, fStringChar, fToString, fStringSub, fOsTime, fMat
 local cachedLink, cachedTime = "", 0;
 
 --! pick host
-local host = "https://api.platoboost.com";
+local host = "https://api.platoboost.app";
 local hostResponse = fRequest({
     Url = host .. "/public/connectivity",
     Method = "GET"
